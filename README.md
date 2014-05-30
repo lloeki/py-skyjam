@@ -14,11 +14,13 @@ Downloads go into a `dl` directory. If you want to put your music somewhere
 else, use a symlink.
 
 Files are named `album artist/album/track - title.mp3`. If a file with this
-name exists, it is not downloaded again.
+name exists, it is not downloaded again. This means re-running will only
+fetch locally missing files.
 
-Logging goes to `dl.log`.
-Tip: `tail -f | egrep 'download (skipped|success|failed)'`.
-Pro tip: `grep 'download failed' | sort`.
+Logging goes to `dl.log`:
+
+* Tip: `tail -f | egrep 'download (skipped|success|failed)'`.
+* Pro tip: `grep 'download failed' | sort`.
 
 ## Why? There's Google's Music Manager or the Chrome extension already!
 
@@ -27,7 +29,7 @@ obliviously redownloads everything when you retry.
 
 The NaCl Google Music Chrome extension allows you to download your songs, but
 you can add to the queue at most per album, you can't cancel it, you can view a
-lrogress list but that's all and there's no log of failures.
+progress list but that's all and there's no log of failures.
 
 IOW, both are absurdly optimist, hopelessly unreliable pieces of software
 mostly due to poor UI.
