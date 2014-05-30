@@ -15,6 +15,8 @@ manager = Musicmanager()
 
 manager.login('oauth.cred')
 
+rows, columns = [int(v) for v in os.popen('stty size', 'r').read().split()]
+
 logging.info('starting download')
 count = 0
 for songs in manager.get_uploaded_songs(True):
@@ -33,13 +35,16 @@ for songs in manager.get_uploaded_songs(True):
                                       song['track_number'],
                                       song['title'].replace('/', '_'))
 
-        sys.stdout.write("%05d %s\n" % (count, fsong))
+        sys.stdout.write('\r' + (' ' * (columns-1)) + '\r')
+        sys.stdout.write(("%05d %s" % (count, fsong))[0:columns-1])
+        sys.stdout.flush()
         if not os.path.exists(fsong):
             audio = None
             try:
                 filename, audio = manager.download_song(song['id'])
                 logging.info('download success: "%s"' % fsong)
             except KeyboardInterrupt:
+                sys.stdout.write('\n')
                 sys.exit(1)  # move this up
             except Exception, e:
                 logging.error('download failed: "%s" %s' % (fsong, e))
