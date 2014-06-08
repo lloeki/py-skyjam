@@ -6,6 +6,19 @@ from gmusicapi.clients import Musicmanager
 
 logging.basicConfig(filename='dl.log', level=logging.DEBUG)
 
+
+def fix(path):
+    # OSX:   : -> FULLWIDTH COLON (U+FF1A)
+    # OSX:   / -> : (translated as / in Cocoa)
+    # LINUX: / -> DIVISION SLASH (U+2215)
+
+    path.replace(':', "\uFF1A")
+    path.replace('/', ':')
+    # path.replace('/', "\u2215")
+
+    return path
+
+
 if os.path.exists('oauth.cred'):
     pass
 else:
@@ -23,17 +36,17 @@ for songs in manager.get_uploaded_songs(True):
     for song in songs:
         count = count + 1
 
-        dartist = 'dl/%s' % (song['album_artist'] or song['artist'])
+        dartist = 'dl/%s' % fix(song['album_artist'] or song['artist'])
         if not os.path.exists(dartist):
             os.mkdir(dartist)
 
-        dalbum = '%s/%s' % (dartist, song['album'])
+        dalbum = '%s/%s' % (dartist, fix(song['album']))
         if not os.path.exists(dalbum):
             os.mkdir(dalbum)
 
         fsong = '%s/%02d - %s.mp3' % (dalbum,
                                       song['track_number'],
-                                      song['title'].replace('/', '_'))
+                                      fix(song['title']))
 
         sys.stdout.write('\r' + (' ' * (columns-1)) + '\r')
         sys.stdout.write(("%05d %s" % (count, fsong))[0:columns-1])
